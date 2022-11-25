@@ -17,12 +17,25 @@ import java.time.LocalDate;
 public class Book implements Comparable<Book> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "isbn", nullable=false, length=45)
     private String isbn;
+
+    @Column(name = "title", nullable=false, length=45)
     private String title;
+
+    @Column(name = "author", nullable=false, length=145)
     private String author;
+
+    @Column(name = "published_date", nullable=false)
     private LocalDate publishedDate = LocalDate.now();
+
+    @Column(name = "issued_copies")
     private Integer issuedCopies;
+
+    @Column(name = "total_copies")
     private Integer totalCopies;
 
     @Override
