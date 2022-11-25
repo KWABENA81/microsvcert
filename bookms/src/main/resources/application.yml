@@ -1,0 +1,44 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: book-ms
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:bookdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: true
+
+
+  sql:
+    init:
+      platform: h2
+  devtools:
+    add-properties: true
+
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+#  instance:
+#    hostname: localhost
+
