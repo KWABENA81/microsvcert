@@ -1,10 +1,16 @@
 package com.edu.bookms.service;
 
+import com.edu.bookms.common.Issuer;
+import com.edu.bookms.common.TransactionRequest;
+import com.edu.bookms.common.TransactionResponse;
 import com.edu.bookms.model.Book;
 import com.edu.bookms.repo.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -12,6 +18,8 @@ import java.util.Optional;
 public class BookService implements IBookService {
     @Autowired
     private BookRepository booksRepository;
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public Collection<Book> findAll() {
@@ -24,8 +32,18 @@ public class BookService implements IBookService {
         return (optionalBook.isPresent()) ? optionalBook.get() : optionalBook.orElseThrow();
     }
 
-    public Book save(Book book) {
-        return booksRepository.save(book);
+    public TransactionResponse saveBook(TransactionRequest request) {
+        String response = "";
+        Book book = request.getBook();
+        Issuer issuer = request.getIssuer();
+        issuer.setIsbn(book.getIsbn());
+
+        Issuer issuerResponse = restTemplate
+                .postForObject("http://ISSUER-MS/issuer/doBookIssuer/", issuer, Issuer.class);
+        response = (issuerResponse.getIssuerConfirm().equalsIgnoreCase("SUCCESS"))
+                ? "Issuer SUCCESFULL" : "FAILURE";
+        booksRepository.save(book);
+        return new TransactionResponse(book, issuerResponse.getIssuerId(), response);
     }
 
     public Book findByIsbn(String isbn) {
@@ -35,6 +53,16 @@ public class BookService implements IBookService {
     }
 
     public boolean delete(Integer id) {
-        return false;//booksRepository.delete(id);
+        Optional<Book> optionalBook = booksRepository.findById(id);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            booksRepository.delete(book);
+            return true;
+        } else return false;
     }
+
+    public Book save(Book book) {
+        booksRepository.save(book);
+        return book;
+            }
 }
