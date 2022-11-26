@@ -1,5 +1,8 @@
 package com.edu.bookms.api;
 
+import com.edu.bookms.common.Issuer;
+import com.edu.bookms.common.TransactionRequest;
+import com.edu.bookms.common.TransactionResponse;
 import com.edu.bookms.model.Book;
 import com.edu.bookms.service.BookService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +31,7 @@ public class BookResource {
     }
 
     //  Fetch Book
-    @GetMapping("/books/{isdn}")
+    @GetMapping("/findByIsbn/{isdn}")
     public ResponseEntity<Book> findByIsbn(@PathVariable String isbn) {
         Book book = bookService.findByIsbn(isbn);
         if (book != null) {
@@ -40,7 +43,7 @@ public class BookResource {
     }
 
     //  Fetch Book
-    @GetMapping("/books/{id}")
+    @GetMapping("/findById/{id}")
     public ResponseEntity<Book> findById(@PathVariable Integer id) {
         Book book = bookService.findById(id);
         if (book != null) {
@@ -51,12 +54,23 @@ public class BookResource {
         return ResponseEntity.notFound().build();
     }
 
+//    //  Add Book
+//    @PostMapping("/createBook")
+//    public ResponseEntity<Book> createBook(@RequestBody TransactionRequest transactionRequest)
+//            throws URISyntaxException {
+//        Book book = transactionRequest.getBook();
+//        Issuer issuer = transactionRequest.getIssuer();
+//        issuer.setIsbn(book.getIsbn());
+//
+//        Book bookSaved = bookService.save(book);
+//        //  send rest call to issuer with isbn, & ...
+//        return ResponseEntity.created(new URI(bookSaved.getId().toString())).body(bookSaved);
+//    }
+
     //  Add Book
-    @PostMapping("/book")
-    public ResponseEntity<Book> createBook(@RequestBody Book book)
-            throws URISyntaxException {
-        Book bookSaved = bookService.save(book);
-        return ResponseEntity.created(new URI(bookSaved.getId().toString())).body(bookSaved);
+    @PostMapping("/issueBook")
+    public TransactionResponse issueBook(@RequestBody TransactionRequest transactionRequest) {
+        return bookService.saveBook(transactionRequest);
     }
 
     //  Edit    , Update
@@ -77,7 +91,7 @@ public class BookResource {
         }
     }
 
-    @DeleteMapping("/books/{id}")
+    @DeleteMapping("/deleteBookById/{id}")
     public ResponseEntity<Integer> deleteBookById(@PathVariable Integer id) {
         boolean isRemoved = bookService.delete(id);
         if (!isRemoved) {
