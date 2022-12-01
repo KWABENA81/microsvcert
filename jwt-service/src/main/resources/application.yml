@@ -1,0 +1,44 @@
+server:
+  port: 8095
+
+
+spring:
+  application:
+    name: jwt-service
+
+#  datasource:
+#    url: jdbc:h2:mem:ussuerdb
+#    username: sa
+#    password: password
+#    driver-class-name: org.h2.Driver
+#
+#  h2:
+#    console:
+#      enabled: true
+#
+#  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+#    defer-datasource-initialization: false
+#    hibernate:
+#      ddl-auto: none
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    open-in-view: true
+#
+#  sql:
+#    init:
+#      platform: h2
+
+app:
+  jwttoken:
+    message: 'Login Successful'
+
+  controller:
+    exception:
+      message1: 'Id and Password Empty'
+      message2: 'Id and Password not found'
+      message3: 'Id and Password Invalid'
+
+  jwt.secret: secret

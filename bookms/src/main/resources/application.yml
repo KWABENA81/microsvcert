@@ -1,20 +1,23 @@
 server:
-  port: 8084
+  port: 8097
 
 spring:
   application:
-    name: book-ms
-
-  datasource:
-    url: jdbc:h2:mem:bookdb
-    username: sa
-    password: password
-    driver-class-name: org.h2.Driver
+    name: bookms
 
   h2:
     console:
       enabled: true
+      path: h2-console
+      settings:
+        trace: false
+        web-allow-others: false
 
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:bookdb
+    username: sa
+    password: password
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -22,10 +25,23 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+    open-in-view: true
     properties:
       hibernate:
         format_sql: true
-    open-in-view: true
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      #defaultZone: http://localhost:8761/eureka
+      #defaultZone: http://host.docker.internal:8761/eureka
+      #defaultZone: http://eureka-server:8761/eureka
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+    #hostname: localhost
 
   sql:
     init:
@@ -34,13 +50,5 @@ spring:
     add-properties: true
 
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
 
-#  instance:
-#    hostname: localhost
 
